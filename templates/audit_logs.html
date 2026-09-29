@@ -60,13 +60,18 @@
         <label class="form-label small mb-1" for="auditAction">Action</label>
         <input class="form-control form-control-sm" id="auditAction" name="action" value="{{ action }}" placeholder="e.g. DELETE" list="auditActionList">
         <datalist id="auditActionList">
-          <option value="CREATE">
-          <option value="UPDATE">
-          <option value="DELETE">
-          <option value="REVERSED">
-          <option value="RESTORE">
-          <option value="LOGIN">
-          <option value="BACKUP">
+          <option value="PURCHASE CREATED">
+          <option value="PURCHASE REVERSED">
+          <option value="PURCHASE RESTORED">
+          <option value="SALE REVERSED">
+          <option value="PAYMENT REVERSED">
+          <option value="LOGIN SUCCESS">
+          <option value="LOGIN FAILED">
+          <option value="LOGIN LOCKED">
+          <option value="DATABASE BACKUP">
+          <option value="DATABASE RESTORE">
+          <option value="USER CREATED">
+          <option value="PASSWORD CHANGED">
         </datalist>
       </div>
       <div class="col-md-2">
