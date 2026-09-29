@@ -2997,11 +2997,21 @@ def edit_user(user_id):
 @require_permission("deactivate_users")
 def toggle_user(user_id):
     conn=db()
-    target = conn.execute("SELECT username, active FROM users WHERE id=?", (user_id,)).fetchone()
+    target = conn.execute("SELECT id, username, role, active FROM users WHERE id=?", (user_id,)).fetchone()
     if target and target["username"] == "admin":
         conn.close()
         flash("The primary admin account cannot be disabled.", "danger")
         return redirect(url_for("users"))
+    if user_id == session.get("user_id"):
+        conn.close()
+        flash("You cannot disable your own account.", "danger")
+        return redirect(url_for("users"))
+    if target and (target["role"] or "").upper() == "ADMIN" and target["active"]:
+        remaining = conn.execute("SELECT COUNT(*) AS c FROM users WHERE upper(role)='ADMIN' AND active=1 AND id!=?", (user_id,)).fetchone()
+        if (remaining["c"] if remaining else 0) < 1:
+            conn.close()
+            flash("Cannot disable the last active administrator.", "danger")
+            return redirect(url_for("users"))
     conn.execute("UPDATE users SET active=CASE active WHEN 1 THEN 0 ELSE 1 END WHERE id=? AND username!='admin'",(user_id,))
     conn.commit()
     updated = conn.execute("SELECT username, active FROM users WHERE id=?", (user_id,)).fetchone()
@@ -3115,11 +3125,21 @@ def delete_audit_logs():
 @require_permission("deactivate_users")
 def delete_user(user_id):
     conn = db()
-    target = conn.execute("SELECT username FROM users WHERE id=?", (user_id,)).fetchone()
+    target = conn.execute("SELECT id, username, role, active FROM users WHERE id=?", (user_id,)).fetchone()
     if target and target["username"] == "admin":
         conn.close()
         flash("The primary admin account cannot be deleted.", "danger")
         return redirect(url_for("users"))
+    if user_id == session.get("user_id"):
+        conn.close()
+        flash("You cannot delete your own account.", "danger")
+        return redirect(url_for("users"))
+    if target and (target["role"] or "").upper() == "ADMIN" and target["active"]:
+        remaining = conn.execute("SELECT COUNT(*) AS c FROM users WHERE upper(role)='ADMIN' AND active=1 AND id!=?", (user_id,)).fetchone()
+        if (remaining["c"] if remaining else 0) < 1:
+            conn.close()
+            flash("Cannot delete the last active administrator.", "danger")
+            return redirect(url_for("users"))
     conn.execute("DELETE FROM users WHERE id=? AND username!='admin'", (user_id,))
     conn.commit()
     conn.close()
