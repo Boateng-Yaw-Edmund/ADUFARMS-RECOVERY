@@ -107,7 +107,9 @@
             <td><span class="fw-semibold">{{ row.created_at|pretty_date }}</span></td>
             <td><span class="badge bg-secondary bg-opacity-10 text-secondary border px-2 py-1"><i class="bi bi-person me-1"></i>{{ row.username or 'SYSTEM' }}</span></td>
             <td>
-              {% if 'REVERSED' in row.action or 'DELETE' in row.action %}
+              {% if 'LOGIN LOCKED' in row.action or 'LOGIN FAILED' in row.action %}
+                <span class="status-badge status-unpaid"><i class="bi bi-shield-lock"></i> {{ row.action }}</span>
+              {% elif 'REVERSED' in row.action or 'DELETE' in row.action %}
                 <span class="status-badge status-unpaid"><i class="bi bi-arrow-counterclockwise"></i> {{ row.action }}</span>
               {% elif 'CREATE' in row.action or 'SAVED' in row.action or 'ADDED' in row.action %}
                 <span class="status-badge status-paid"><i class="bi bi-check-circle"></i> {{ row.action }}</span>

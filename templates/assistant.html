@@ -12,7 +12,8 @@
 
   <div class="card assistant-card">
     <div class="card-body">
-      <form method="get" class="assistant-form">
+      <form method="post" class="assistant-form">
+        {{ csrf_input() }}
         <label class="form-label" for="assistantQuestion">Ask any operational or financial question</label>
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-search"></i></span>
