@@ -2606,12 +2606,16 @@ def invoice_pdf(transaction_id):
     logo_path = BASE_DIR / "static" / "images" / "branding" / "adufarms-logo.jpg"
     watermark_buffer = io.BytesIO()
     if logo_path.exists():
-        with PILImage.open(logo_path) as source_logo:
-            watermark_logo = source_logo.convert("RGBA")
-            watermark_logo.thumbnail((900, 700), PILImage.Resampling.LANCZOS)
-            watermark_logo.putalpha(watermark_logo.getchannel("A").point(lambda value: int(value * 0.12)))
-            watermark_logo.save(watermark_buffer, format="PNG", optimize=True, compress_level=9)
-        watermark_buffer.seek(0)
+        try:
+            with PILImage.open(logo_path) as source_logo:
+                watermark_logo = source_logo.convert("RGBA")
+                watermark_logo.thumbnail((900, 700), PILImage.Resampling.LANCZOS)
+                watermark_logo.putalpha(watermark_logo.getchannel("A").point(lambda value: int(value * 0.12)))
+                watermark_logo.save(watermark_buffer, format="PNG", optimize=True, compress_level=9)
+            watermark_buffer.seek(0)
+        except Exception:
+            app.logger.exception("Invoice logo unreadable, continuing without watermark")
+            watermark_buffer = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, rightMargin=10*mm,leftMargin=10*mm,topMargin=8*mm,bottomMargin=8*mm)
     def draw_watermark(canvas, document):
         if not watermark_buffer.getbuffer().nbytes:
