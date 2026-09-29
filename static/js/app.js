@@ -232,12 +232,17 @@ document.addEventListener("DOMContentLoaded", function () {
 	document.querySelectorAll("table.sortable thead th[data-sort]").forEach(function (th) {
 		th.style.cursor = "pointer";
 		th.title = "Sort";
+		th.setAttribute("tabindex", "0");
+		th.setAttribute("role", "columnheader");
+		if (!th.hasAttribute("aria-sort")) th.setAttribute("aria-sort", "none");
+		function activateSort() { th.click(); }
 		th.addEventListener("click", function () {
 			const table = th.closest("table");
 			const idx = Array.prototype.indexOf.call(th.parentNode.children, th);
 			const asc = th.dataset.dir !== "asc";
-			table.querySelectorAll("thead th").forEach(function (h) { delete h.dataset.dir; });
+			table.querySelectorAll("thead th").forEach(function (h) { delete h.dataset.dir; h.setAttribute("aria-sort", "none"); });
 			th.dataset.dir = asc ? "asc" : "desc";
+			th.setAttribute("aria-sort", asc ? "ascending" : "descending");
 			const rows = Array.from(table.querySelectorAll("tbody tr"));
 			rows.sort(function (a, b) {
 				const av = (a.children[idx] ? a.children[idx].textContent.trim() : "").toLowerCase();
@@ -251,6 +256,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 			const tb = table.querySelector("tbody");
 			rows.forEach(function (r) { tb.appendChild(r); });
+		});
+		th.addEventListener("keydown", function (e) {
+			if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activateSort(); }
 		});
 	});
 	window.paginateCard = paginateCard;
