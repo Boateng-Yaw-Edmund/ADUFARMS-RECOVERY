@@ -84,11 +84,11 @@
 
   {% if info %}
   <article class="invoice-paper">
-    <div class="invoice-watermark" aria-hidden="true"><img src="{{ url_for('static', filename='images/branding/adufarms-logo.jpg') }}" alt=""></div>
+    <div class="invoice-watermark" aria-hidden="true"><img src="{{ url_for('static', filename='images/branding/adufarms-logo.jpg') }}" alt="" width="420" height="280" loading="lazy"></div>
     <div class="invoice-accent" aria-hidden="true"></div>
     <header class="invoice-header">
       <div class="document-brand">
-        <img src="{{ url_for('static', filename='images/branding/adufarms-logo.jpg') }}" alt="ADUFARMS company branding">
+        <img src="{{ url_for('static', filename='images/branding/adufarms-logo.jpg') }}" alt="ADUFARMS company branding" width="74" height="62" fetchpriority="high">
         <div>
           <h1>{{ company.legal_name }}</h1>
           <strong>{{ company.service_line }}</strong>
