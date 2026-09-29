@@ -54,7 +54,7 @@
           <div class="col-md-3"><div class="stat-label">Estimated total cost</div><div class="stat-value" id="purchaseTotal">GH₵0.00</div><div class="stat-support">Quantity x price + logistics</div></div>
         </div>
       </div>
-      <button class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i> Save purchase</button>
+      <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle me-1"></i> Save purchase</button>
     </form>
   </div>
 </div>
@@ -138,7 +138,7 @@
           {% else %}
           <tr>
             <td colspan="13">
-              <div class="empty-state"><i class="bi bi-box-seam"></i>No purchases recorded yet.<br><a href="{{ url_for('purchases') }}" class="btn btn-sm btn-primary mt-2">Start with your first purchase</a></div>
+              <div class="empty-state"><i class="bi bi-box-seam"></i>No purchases recorded yet.<br><a href="{{ url_for('purchases') }}#new" class="btn btn-sm btn-primary mt-2">Start with your first purchase</a></div>
             </td>
           </tr>
           {% endfor %}
