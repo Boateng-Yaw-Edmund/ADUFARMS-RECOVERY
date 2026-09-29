@@ -1369,3 +1369,7 @@ body.sidebar-collapsed .sidebar-brand-row { min-height:72px; padding-bottom:14px
 .dashboard-analytics-row .activity-item { padding:1px 0; }
 @media (max-width:991px) { .dashboard-analytics-row > [class*="col-"] > .card { height:100%!important; } }
 
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}

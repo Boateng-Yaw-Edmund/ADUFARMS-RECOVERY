@@ -208,7 +208,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	});
 	document.querySelectorAll(".app-alerts .alert").forEach(function (alert) {
-		window.setTimeout(function () { if (typeof bootstrap !== "undefined") bootstrap.Alert.getOrCreateInstance(alert).close(); }, 5000);
+		let remaining = 5000, start = Date.now(), timer = null;
+		function closeAlert() { if (typeof bootstrap !== "undefined") bootstrap.Alert.getOrCreateInstance(alert).close(); }
+		function schedule(delay) { timer = window.setTimeout(closeAlert, delay); }
+		schedule(remaining);
+		alert.addEventListener("mouseenter", function () { if (timer) { window.clearTimeout(timer); timer = null; remaining -= Date.now() - start; } });
+		alert.addEventListener("mouseleave", function () { if (!timer) { start = Date.now(); schedule(Math.max(remaining, 1500)); } });
+		alert.addEventListener("focusin", function () { if (timer) { window.clearTimeout(timer); timer = null; remaining -= Date.now() - start; } });
+		alert.addEventListener("focusout", function () { if (!timer) { start = Date.now(); schedule(Math.max(remaining, 1500)); } });
 	});
 	document.querySelectorAll("[data-table-search]").forEach(function (input) {
 		input.addEventListener("input", function () {
