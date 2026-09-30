@@ -662,8 +662,9 @@ body {
 .table tbody tr:hover { --bs-table-hover-bg:rgba(217,157,33,.06); }
 .form-control, .form-select { min-height:42px; border-radius:10px; border-color:var(--border); background:var(--panel-soft); transition:border-color .15s ease, box-shadow .15s ease, background .15s ease; }
 .form-control:focus, .form-select:focus { border-color:var(--accent); background:var(--panel); box-shadow:0 0 0 3px rgba(217,157,33,.14); }
-.btn { min-height:40px; transition:transform .15s ease, box-shadow .15s ease, background .15s ease; }
+.btn { min-height:40px; transition:transform 160ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow .15s ease, background .15s ease; }
 .btn:hover { transform:translateY(-1px); box-shadow:0 6px 14px rgba(18,59,42,.12); }
+.btn:active { transform:scale(0.97); box-shadow:0 2px 6px rgba(18,59,42,.12); }
 .btn:focus-visible, .icon-button:focus-visible, .profile-link:focus-visible, .sidebar-nav a:focus-visible { outline:3px solid rgba(217,157,33,.42); outline-offset:2px; }
 .quick-actions .btn-warning { box-shadow:0 6px 16px rgba(217,157,33,.17); }
 .status-paid { color:#216b46; background:#e4f5ea; }.status-part { color:#80631d; background:#fff4d2; }.status-unpaid,.status-reversed { color:#9a4545; background:#fbe8e8; }.status-pending { color:#3d6480; background:#e8f2f8; }
@@ -679,8 +680,9 @@ body {
 .stock-meter span { display:block; height:100%; min-width:4px; border-radius:inherit; background:linear-gradient(90deg,#e1a92e,#f3d56f); }
 .inventory-meta { display:flex; flex-wrap:wrap; gap:7px 12px; margin-top:12px; color:#d6e6da; font-size:.65rem; }
 .inventory-meta i { color:#f0c85f; }
-.page-hero { isolation:isolate; background-position:center 48%; }
-.page-hero::after { opacity:.72; }
+.page-hero { isolation:isolate; position:relative; overflow:hidden; min-height:154px; margin-bottom:26px; border-radius:16px; background-image:linear-gradient(90deg, rgba(13,42,27,.88), rgba(19,56,35,.55) 55%, rgba(19,56,35,.15)), var(--hero-image); background-size:cover; background-position:center 48%; box-shadow:0 10px 26px rgba(24,61,43,.12); }
+.page-hero-copy { position:relative; z-index:1; }
+.page-hero-copy p { text-shadow:0 1px 10px rgba(0,0,0,.35); }
 .dashboard-hero { background-position:center 58%; }
 img { max-width:100%; }
 body[data-theme="dark"] .table thead th { background:var(--panel); }
@@ -1375,3 +1377,28 @@ body.sidebar-collapsed .sidebar-brand-row { min-height:72px; padding-bottom:14px
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 }
+
+/* Mock-style customer directory: eye + menu actions, numbered pager. */
+.customer-actions-menu { min-width:220px; padding:6px; border-radius:12px; border:1px solid var(--border); box-shadow:0 14px 32px rgba(18,59,42,.18); }
+.customer-actions-menu .dropdown-item { display:flex; align-items:center; border-radius:8px; padding:9px 12px; font-size:.86rem; font-weight:600; }
+.customer-actions-menu .dropdown-item i { width:18px; text-align:center; color:var(--muted-text); }
+.customer-actions-menu .dropdown-item:hover i { color:inherit; }
+.customer-view-btn { transition:transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease, color 160ms ease; }
+.customer-view-btn:active { transform:scale(0.94); }
+.customer-pager { display:flex; align-items:center; gap:6px; }
+.customer-pager .page-num, .customer-pager .page-nav { min-width:32px; height:32px; display:inline-grid; place-items:center; padding:0 8px; border-radius:8px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:.82rem; font-weight:700; text-decoration:none; transition:transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease; }
+.customer-pager a.page-num:hover, .customer-pager a.page-nav:hover { background:var(--panel-soft); transform:translateY(-1px); }
+.customer-pager a.page-num:active, .customer-pager a.page-nav:active { transform:scale(0.94); }
+.customer-pager .page-num.active { background:var(--sidebar); border-color:var(--sidebar); color:#fff; }
+.customer-pager .page-gap { color:var(--muted-text); padding:0 2px; }
+@media (hover:hover) and (pointer:fine) { #customersTable tbody tr:hover { background:rgba(217,157,33,.05); } }
+/* Fit all 9 columns without horizontal scroll on desktop. */
+#customersTable { font-size:.82rem; }
+#customersTable thead th { padding:8px; font-size:.7rem; }
+#customersTable tbody td { padding:8px; }
+#customersTable .customer-chip { gap:6px; }
+#customersTable .customer-avatar { width:26px; height:26px; min-width:26px; font-size:.66rem; }
+#customersTable .table-seq-num { width:20px; height:20px; font-size:.62rem; }
+#customersTable .badge-customer-type, #customersTable .badge-balance { font-size:.68rem; padding:3px 7px; }
+#customersTable .btn-sm { padding:4px 8px; font-size:.76rem; }
+#customersTable td.text-end { white-space:nowrap; }
