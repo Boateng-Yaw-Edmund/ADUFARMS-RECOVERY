@@ -70,6 +70,53 @@ document.addEventListener("DOMContentLoaded", function () {
 		const icon = sidebarCollapse.querySelector("i");
 		if (icon) icon.className = body.classList.contains("sidebar-collapsed") ? "bi bi-layout-sidebar" : "bi bi-layout-sidebar-inset";
 	});
+	const railExpand = document.getElementById("railExpand");
+	if (railExpand) railExpand.addEventListener("click", function () {
+		body.classList.remove("sidebar-collapsed");
+		try { localStorage.setItem("sidebarCollapsed", "false"); localStorage.setItem("adufarms-sidebar", "expanded"); } catch (e) {}
+	});
+	let railTip = null, railTipTimer = null;
+	function hideRailTip() {
+		if (railTipTimer) { window.clearTimeout(railTipTimer); railTipTimer = null; }
+		if (railTip && railTip.parentNode) railTip.parentNode.removeChild(railTip);
+		railTip = null;
+	}
+	document.querySelectorAll(".app-sidebar [data-tip]").forEach(function (el) {
+		el.addEventListener("mouseenter", function () {
+			if (!body.classList.contains("sidebar-collapsed")) return;
+			hideRailTip();
+			railTipTimer = window.setTimeout(function () {
+				if (!body.classList.contains("sidebar-collapsed")) return;
+				const rect = el.getBoundingClientRect();
+				railTip = document.createElement("div");
+				railTip.className = "rail-tip";
+				railTip.textContent = el.getAttribute("data-tip");
+				railTip.style.left = Math.round(rect.right + 12) + "px";
+				railTip.style.top = Math.round(rect.top + rect.height / 2) + "px";
+				railTip.style.transform = "translateY(-50%) scale(.96)";
+				document.body.appendChild(railTip);
+				requestAnimationFrame(function () {
+					if (!railTip) return;
+					railTip.style.transform = "translateY(-50%) scale(1)";
+					railTip.classList.add("show");
+				});
+			}, 250);
+		});
+		el.addEventListener("mouseleave", hideRailTip);
+		el.addEventListener("focus", function () {
+			if (!body.classList.contains("sidebar-collapsed")) return;
+			hideRailTip();
+			const rect = el.getBoundingClientRect();
+			railTip = document.createElement("div");
+			railTip.className = "rail-tip show";
+			railTip.textContent = el.getAttribute("data-tip");
+			railTip.style.left = Math.round(rect.right + 12) + "px";
+			railTip.style.top = Math.round(rect.top + rect.height / 2) + "px";
+			railTip.style.transform = "translateY(-50%)";
+		});
+		el.addEventListener("blur", hideRailTip);
+	});
+	if (sidebar) sidebar.addEventListener("scroll", hideRailTip, { passive: true });
 	const savedTheme = localStorage.getItem("adufarms-theme");
 	if (savedTheme) body.dataset.theme = savedTheme;
 	const themeToggle = document.getElementById("themeToggle");
@@ -81,11 +128,17 @@ document.addEventListener("DOMContentLoaded", function () {
 		if (icon) icon.className = nextTheme === "dark" ? "bi bi-sun" : "bi bi-moon-stars";
 	});
 	const menuToggle = document.getElementById("mobileMenuToggle");
-	if (menuToggle) menuToggle.addEventListener("click", function () { body.classList.toggle("sidebar-open"); });
+	if (menuToggle) menuToggle.addEventListener("click", function () {
+		if (window.matchMedia("(max-width: 900px)").matches) { body.classList.toggle("sidebar-open"); return; }
+		body.classList.remove("sidebar-collapsed");
+		try { localStorage.setItem("sidebarCollapsed", "false"); localStorage.setItem("adufarms-sidebar", "expanded"); } catch (e) {}
+	});
 	if (sidebarScrim) sidebarScrim.addEventListener("click", function () { body.classList.remove("sidebar-open"); });
 	if (sidebar) sidebar.querySelectorAll(".sidebar-nav a").forEach(function (link) {
-		const label = link.querySelector("span");
-		if (label) link.title = label.textContent.trim();
+		if (!link.getAttribute("aria-label")) {
+			const label = link.querySelector("span:not(.nav-icon)");
+			if (label) link.setAttribute("aria-label", label.textContent.trim());
+		}
 	});
 	document.querySelectorAll(".app-sidebar a").forEach(function (link) { link.addEventListener("click", function () { body.classList.remove("sidebar-open"); }); });
 	const popoverPairs = [["notificationToggle", "notificationPanel"], ["profileToggle", "profilePanel"], ["newTransactionToggle", "newTransactionPanel"], ["sidebarProfileToggle", "sidebarProfilePanel"]];
